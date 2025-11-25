@@ -1,0 +1,8 @@
+vendor/
+.env
+.idea/
+.vscode/
+*.log
+.DS_Store
+phpunit.xml.bak
+

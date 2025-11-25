@@ -23,3 +23,52 @@ Chaque adolescent a un compte d’argent de poche, et chaque parent peut :
 - Phase 2 – Implémentation du code (GREEN)
 - Phase 3 – Refactoring
 - Phase 4 – Vérification de la couverture
+
+## Installation et Configuration
+
+### Prérequis
+
+- PHP 8.2 ou supérieur
+- Composer
+
+### Installation
+
+1. Clonez le dépôt.
+2. Installez les dépendances :
+
+   ```bash
+   composer install
+   ```
+
+3. Configurez l'environnement :
+   - Copiez le fichier `env.example` vers `.env` :
+
+     ```bash
+     cp .env.example .env
+     ```
+
+   - Modifiez les variables dans `.env` si nécessaire (Configuration BDD, etc.).
+
+### Lancer les tests
+
+Pour exécuter la suite de tests PHPUnit :
+
+```bash
+composer test
+```
+
+ou
+
+```bash
+vendor/bin/phpunit
+```
+
+### Lancer le projet en local
+
+Vous pouvez utiliser le serveur interne de PHP pour tester rapidement :
+
+```bash
+php -S localhost:8000 -t public
+```
+
+Accédez ensuite à `http://localhost:8000`.
