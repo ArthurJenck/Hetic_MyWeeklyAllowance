@@ -34,17 +34,18 @@ class UserRepository
         return (int) $this->db->lastInsertId();
     }
 
-    public function createTeenager(string $name, string $birthDate, string $password, int $parentId): int
+    public function createTeenager(string $name, string $birthDate, string $email, string $password, int $parentId): int
     {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
         $stmt = $this->db->prepare("
-            INSERT INTO users (name, password, role, birth_date, parent_id) 
-            VALUES (:name, :password, 'teenager', :birth_date, :parent_id)
+            INSERT INTO users (name, email, password, role, birth_date, parent_id) 
+            VALUES (:name, :email, :password, 'teenager', :birth_date, :parent_id)
         ");
         
         $stmt->execute([
             'name' => $name,
+            'email' => $email,
             'password' => $hashedPassword,
             'birth_date' => $birthDate,
             'parent_id' => $parentId
@@ -74,6 +75,19 @@ class UserRepository
         ");
         
         $stmt->execute(['name' => $name, 'parent_id' => $parentId]);
+        $user = $stmt->fetch();
+        
+        return $user ?: null;
+    }
+
+    public function findTeenagerByEmail(string $email): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT * FROM users 
+            WHERE email = :email AND role = 'teenager' AND deleted_at IS NULL
+        ");
+        
+        $stmt->execute(['email' => $email]);
         $user = $stmt->fetch();
         
         return $user ?: null;

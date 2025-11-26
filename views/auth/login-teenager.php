@@ -7,13 +7,13 @@ ob_start();
     <h2>Connexion Adolescent</h2>
 
     <?php if (isset($_GET['error'])): ?>
-        <div class="alert alert-error">Email du parent ou mot de passe incorrect</div>
+        <div class="alert alert-error">Email ou mot de passe incorrect</div>
     <?php endif; ?>
 
     <form method="POST" action="/auth/login-teenager">
         <div class="form-group">
-            <label for="parent_email">Email du Parent</label>
-            <input type="email" id="parent_email" name="parent_email" required>
+            <label for="email">Votre Email</label>
+            <input type="email" id="email" name="email" required>
         </div>
 
         <div class="form-group">

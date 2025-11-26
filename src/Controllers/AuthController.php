@@ -53,25 +53,16 @@ class AuthController
 
     public function loginTeenager(): void
     {
-        $parentEmail = $_POST['parent_email'] ?? '';
+        $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        $parent = $this->userRepo->findParentByEmail($parentEmail);
+        $user = $this->userRepo->findTeenagerByEmail($email);
 
-        if (!$parent) {
-            header('Location: /auth/login-teenager?error=1');
+        if ($user && password_verify($password, $user['password'])) {
+            $token = JWTHelper::generateToken($user['id'], 'teenager');
+            setcookie('auth_token', $token, time() + 86400, '/', '', false, true);
+            header('Location: /teenager/dashboard');
             exit;
-        }
-
-        $teenagers = $this->userRepo->findTeenagersByParentId($parent['id']);
-
-        foreach ($teenagers as $teenager) {
-            if (password_verify($password, $teenager['password'])) {
-                $token = JWTHelper::generateToken($teenager['id'], 'teenager');
-                setcookie('auth_token', $token, time() + 86400, '/', '', false, true);
-                header('Location: /teenager/dashboard');
-                exit;
-            }
         }
 
         header('Location: /auth/login-teenager?error=1');

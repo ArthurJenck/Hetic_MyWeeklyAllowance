@@ -47,11 +47,12 @@ class ParentController
 
         $name = $_POST['name'] ?? '';
         $birthDate = $_POST['birth_date'] ?? '';
+        $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $weeklyAllowance = floatval($_POST['weekly_allowance'] ?? 0);
 
         try {
-            $teenagerId = $this->userRepo->createTeenager($name, $birthDate, $password, $user->userId);
+            $teenagerId = $this->userRepo->createTeenager($name, $birthDate, $email, $password, $user->userId);
             $this->walletRepo->create($teenagerId, $weeklyAllowance);
 
             header('Location: /parent/dashboard?success=teenager_added');

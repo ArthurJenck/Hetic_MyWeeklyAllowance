@@ -16,7 +16,6 @@ ob_start();
     <?php endif; ?>
 
     <div class="wallet-info">
-        <p class="balance"><strong>Solde Total:</strong> <?= number_format($wallet['balance'], 2) ?> €</p>
         <p><strong>Allocation Hebdo:</strong> <?= number_format($wallet['weekly_allowance'], 2) ?> €</p>
         <p><strong>Reste Cette Semaine:</strong> <?= number_format($wallet['weekly_remaining'], 2) ?> €</p>
     </div>
