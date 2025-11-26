@@ -15,9 +15,10 @@ class Teenager
     private ?string $password = null;
     private TeenagerWallet $wallet;
 
-    public function __construct(string $name, string $birthDate, ?TeenagerWallet $wallet = null)
+    public function __construct(string $name, string $birthDate, string $email, ?TeenagerWallet $wallet = null)
     {
         $this->name = $name;
+        $this->email = $email;
         $this->birthDate = new DateTime($birthDate);
 
         $age = $this->getAge();
@@ -37,7 +38,7 @@ class Teenager
             return false;
         }
 
-        if ($username !== $this->name) {
+        if ($username !== $this->email) {
             return false;
         }
 

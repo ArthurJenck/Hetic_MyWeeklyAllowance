@@ -31,6 +31,7 @@ class ParentController
         foreach ($teenagers as &$teenager) {
             $teenager['wallet'] = $this->walletRepo->findByUserId($teenager['id']);
         }
+        unset($teenager);
 
         require_once __DIR__ . '/../../views/parent/dashboard.php';
     }
@@ -50,10 +51,39 @@ class ParentController
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $weeklyAllowance = floatval($_POST['weekly_allowance'] ?? 0);
+        $initialAmount = floatval($_POST['initial_amount'] ?? 0);
 
         try {
             $teenagerId = $this->userRepo->createTeenager($name, $birthDate, $email, $password, $user->userId);
             $this->walletRepo->create($teenagerId, $weeklyAllowance);
+
+            if ($initialAmount > 0) {
+                $parentWallet = $this->walletRepo->findByUserId($user->userId);
+
+                if ($parentWallet['balance'] < $initialAmount) {
+                    header('Location: /parent/dashboard?success=teenager_added&warning=insufficient_funds_for_initial');
+                    exit;
+                }
+
+                $teenagerWallet = $this->walletRepo->findByUserId($teenagerId);
+                $parentData = $this->userRepo->findById($user->userId);
+
+                $this->walletRepo->updateBalance($parentWallet['id'], $parentWallet['balance'] - $initialAmount);
+                $this->walletRepo->updateBalance($teenagerWallet['id'], $teenagerWallet['balance'] + $initialAmount);
+
+                if ($weeklyAllowance > 0) {
+                    $newWeeklyRemaining = min($initialAmount, $weeklyAllowance);
+                } else {
+                    $newWeeklyRemaining = $initialAmount;
+                }
+                $this->walletRepo->updateWeeklyRemaining($teenagerWallet['id'], $newWeeklyRemaining);
+
+                $descriptionFromParent = 'Transfert initial à ' . $name;
+                $descriptionToTeenager = 'Transfert initial ' . \App\Helpers\TextHelper::de($parentData['name']) . $parentData['name'];
+
+                $this->transactionRepo->create($parentWallet['id'], $initialAmount, 'TRANSFER_OUT', $descriptionFromParent);
+                $this->transactionRepo->create($teenagerWallet['id'], $initialAmount, 'TRANSFER_IN', $descriptionToTeenager);
+            }
 
             header('Location: /parent/dashboard?success=teenager_added');
         } catch (\Exception $e) {

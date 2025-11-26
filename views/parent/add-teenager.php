@@ -37,6 +37,12 @@ ob_start();
             <input type="number" step="0.01" id="weekly_allowance" name="weekly_allowance" value="0" required>
         </div>
 
+        <div class="form-group">
+            <label for="initial_amount">Montant initial à transférer (€) - Optionnel</label>
+            <input type="number" step="0.01" id="initial_amount" name="initial_amount" value="0" min="0" placeholder="0.00">
+            <small style="color: #7F8C8D;">L'argent sera transféré depuis votre wallet commun</small>
+        </div>
+
         <button type="submit" class="btn btn-primary">Ajouter</button>
         <a href="/parent/dashboard" class="btn">Annuler</a>
     </form>

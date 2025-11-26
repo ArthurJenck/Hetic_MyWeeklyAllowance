@@ -14,7 +14,7 @@ class TeenagerWallet
     public function __construct(float $weeklyAllowance)
     {
         $this->weeklyAllowance = $weeklyAllowance;
-        $this->weeklyRemainingBalance = $weeklyAllowance;
+        $this->weeklyRemainingBalance = 0;
     }
 
     public function getBalance(): float
@@ -44,14 +44,13 @@ class TeenagerWallet
         }
 
         $this->balance += $amount;
-        
-        if ($this->weeklyAllowance > 0 && $this->weeklyRemainingBalance < $this->weeklyAllowance) {
-            $this->weeklyRemainingBalance += $amount;
-            if ($this->weeklyRemainingBalance > $this->weeklyAllowance) {
-                $this->weeklyRemainingBalance = $this->weeklyAllowance;
-            }
+
+        if ($this->weeklyAllowance > 0) {
+            $this->weeklyRemainingBalance = min($this->balance, $this->weeklyAllowance);
+        } else {
+            $this->weeklyRemainingBalance = $this->balance;
         }
-        
+
         $this->transactions[] = new Transaction($amount, 'DEPOSIT', new \DateTime(), 'Deposit');
     }
 
@@ -99,8 +98,8 @@ class TeenagerWallet
 
     public function resetWeeklyAllowance(): void
     {
-        $this->balance += $this->weeklyAllowance;
-        $this->weeklyRemainingBalance = $this->weeklyAllowance;
+        // Le reset réinitialise uniquement le compteur hebdomadaire, plafonné au balance réel
+        $this->weeklyRemainingBalance = min($this->weeklyAllowance, $this->balance);
     }
 
     public function getTransactionHistory(): array
@@ -108,4 +107,3 @@ class TeenagerWallet
         return $this->transactions;
     }
 }
-

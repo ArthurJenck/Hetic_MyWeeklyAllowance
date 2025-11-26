@@ -22,6 +22,16 @@ ob_start();
         ?>
         <div class="alert alert-success"><?= $successMsg ?></div>
     <?php endif; ?>
+
+    <?php if (isset($_GET['warning'])): ?>
+        <?php
+        $warningMessages = [
+            'insufficient_funds_for_initial' => 'Adolescent créé, mais montant initial non transféré (solde insuffisant).'
+        ];
+        $warningMsg = $warningMessages[$_GET['warning']] ?? 'Attention';
+        ?>
+        <div class="alert" style="background-color: #FFF3CD; color: #856404; border-left: 4px solid #FFC107;"><?= $warningMsg ?></div>
+    <?php endif; ?>
 </div>
 
 <div class="card">
