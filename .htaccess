@@ -1,0 +1,14 @@
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Bloquer l'accès aux fichiers sensibles
+    RewriteRule ^(vendor|src|views|tests|database|composer\.json|composer\.lock|phpunit\.xml|README\.md|\.env) - [F,L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+

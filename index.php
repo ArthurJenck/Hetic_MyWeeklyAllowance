@@ -1,11 +1,5 @@
 <?php
 
-// Affichage des erreurs (à désactiver en prod plus tard)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// On cherche l'autoload au même niveau que index.php
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Router;
@@ -16,12 +10,10 @@ use App\Controllers\HomeController;
 use App\Middleware\AuthMiddleware;
 use Dotenv\Dotenv;
 
-// Chargement du .env
 try {
     $dotenv = Dotenv::createImmutable(__DIR__);
     $dotenv->safeLoad();
 } catch (Exception $e) {
-    // Si .env manque, on continue
 }
 
 $router = new Router();
@@ -140,17 +132,6 @@ $router->register('GET', '/teenager/history', function () {
     $teenager->history();
 });
 
-// --- DEBUG ---
-// On intercepte tout avant le resolve pour voir ce qui se passe
-echo "<pre>";
-echo "URI Demandée (REQUEST_URI): " . $_SERVER['REQUEST_URI'] . "\n";
-echo "Script Name (SCRIPT_NAME): " . $_SERVER['SCRIPT_NAME'] . "\n";
-echo "Query String: " . ($_SERVER['QUERY_STRING'] ?? 'VIDE') . "\n";
-echo "Path Info: " . ($_SERVER['PATH_INFO'] ?? 'NON DÉFINI') . "\n";
-echo "</pre>";
-// die("FIN DU DEBUG");
-
-// Dispatch
 try {
     $router->resolve($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
 } catch (Exception $e) {

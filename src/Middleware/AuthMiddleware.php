@@ -13,7 +13,6 @@ class AuthMiddleware
         }
 
         $token = $_COOKIE['auth_token'];
-        
         if (!JWTHelper::validateToken($token)) {
             return null;
         }
@@ -26,7 +25,7 @@ class AuthMiddleware
         $user = self::authenticate();
 
         if ($user === null) {
-            header('Location: /index.php/auth/login-parent');
+            header('Location: /auth/login');
             exit;
         }
 
@@ -48,4 +47,3 @@ class AuthMiddleware
         return self::requireAuth('teenager');
     }
 }
-
