@@ -1,8 +1,16 @@
-vendor/
+# Variables d'environnement
 .env
-.idea/
-.vscode/
-*.log
-.DS_Store
+
+# Dépendances Composer
+/vendor/
+
+# Cache PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
 phpunit.xml.bak
 
+# Autres
+.idea/
+*.log
+.DS_Store
+.vscode/
