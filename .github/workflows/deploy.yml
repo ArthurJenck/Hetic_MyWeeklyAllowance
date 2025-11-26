@@ -2,20 +2,22 @@ name: Deploy to FTP
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  ftp-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Upload via FTP
+      - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v3.1.1
         with:
           ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
           local-dir: .
-          server-dir: /htdocs/
+          git-ftp-args: --remote-root /htdocs/
