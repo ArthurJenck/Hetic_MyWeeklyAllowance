@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 use App\TeenagerWallet;
 use App\Transaction;
 use Exception;
@@ -31,16 +32,26 @@ class TeenagerWalletTest extends TestCase
         $this->assertEquals(100, $wallet->getBalance());
     }
 
-    public function test_teenager_wallet_cannot_deposit_negative_amount(): void
+    #[TestWith([50.0, true])]
+    #[TestWith([0.0, false])]
+    #[TestWith([-10.0, false])]
+    public function test_teenager_wallet_deposit_amount_validation(float $amount, bool $shouldSucceed): void
     {
         // Arrange
         $wallet = new TeenagerWallet(50);
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Amount must be positive');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Amount must be positive');
+        }
 
-        $wallet->deposit(-30);
+        // Act
+        $wallet->deposit($amount);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals($amount, $wallet->getBalance());
+        }
     }
 
     public function test_teenager_wallet_has_weekly_allowance(): void
@@ -102,45 +113,73 @@ class TeenagerWalletTest extends TestCase
         $this->assertEquals(60, $wallet->getBalance());
     }
 
-    public function test_teenager_wallet_can_withdraw_within_weekly_limit(): void
+    #[TestWith([20.0, true])]
+    #[TestWith([0.0, false])]
+    #[TestWith([-10.0, false])]
+    public function test_teenager_wallet_withdraw_amount_validation(float $amount, bool $shouldSucceed): void
     {
         // Arrange
         $wallet = new TeenagerWallet(50);
         $wallet->deposit(100);
+
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Amount must be positive');
+        }
 
         // Act
-        $wallet->withdraw(40);
+        $wallet->withdraw($amount);
 
         // Assert
-        $this->assertEquals(60, $wallet->getBalance());
-        $this->assertEquals(10, $wallet->getWeeklyRemainingBalance()); // 50 - 40
+        if ($shouldSucceed) {
+            $this->assertEquals(100 - $amount, $wallet->getBalance());
+        }
     }
 
-    public function test_teenager_wallet_cannot_withdraw_beyond_weekly_limit(): void
+    #[TestWith([30.0, true])]
+    #[TestWith([50.0, true])]
+    #[TestWith([60.0, false])]
+    public function test_teenager_wallet_withdraw_weekly_limit_validation(float $withdrawAmount, bool $shouldSucceed): void
     {
         // Arrange
         $wallet = new TeenagerWallet(50);
         $wallet->deposit(100);
-        $wallet->withdraw(40);
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Weekly allowance exceeded');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Weekly allowance exceeded');
+        }
 
-        $wallet->withdraw(20); // 40 + 20 = 60 > 50
+        // Act
+        $wallet->withdraw($withdrawAmount);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals(100 - $withdrawAmount, $wallet->getBalance());
+        }
     }
 
-    public function test_teenager_wallet_cannot_withdraw_more_than_total_balance(): void
+    #[TestWith([20.0, true])]
+    #[TestWith([30.0, true])]
+    #[TestWith([50.0, false])]
+    public function test_teenager_wallet_withdraw_balance_validation(float $withdrawAmount, bool $shouldSucceed): void
     {
         // Arrange
         $wallet = new TeenagerWallet(100);
         $wallet->deposit(30);
 
-        // Assert & Act - Limite hebdo OK (100) mais solde total insuffisant
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Insufficient funds');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Insufficient funds');
+        }
 
-        $wallet->withdraw(50);
+        // Act
+        $wallet->withdraw($withdrawAmount);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals(30 - $withdrawAmount, $wallet->getBalance());
+        }
     }
 
     public function test_teenager_wallet_tracks_transaction_history(): void

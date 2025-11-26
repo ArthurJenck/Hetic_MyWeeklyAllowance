@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 use App\Teenager;
 use App\Wallet;
 use Exception;
@@ -10,43 +11,22 @@ use DateTime;
 
 class TeenagerTest extends TestCase
 {
-    public function test_teenager_can_authenticate_with_valid_credentials(): void
+    #[TestWith(['Alice', 'correctPassword', true])]
+    #[TestWith(['WrongName', 'correctPassword', false])]
+    #[TestWith(['Alice', 'wrongPassword', false])]
+    #[TestWith(['', 'correctPassword', false])]
+    #[TestWith(['Alice', '', false])]
+    public function test_teenager_authentication(string $username, string $password, bool $shouldSucceed): void
     {
         // Arrange
         $teenager = new Teenager("Alice", "2010-05-15");
-        $teenager->setPassword("securePassword123");
-
-        // Act
-        $result = $teenager->authenticate("Alice", "securePassword123");
-
-        // Assert
-        $this->assertTrue($result);
-    }
-
-    public function test_teenager_cannot_authenticate_with_wrong_password(): void
-    {
-        // Arrange
-        $teenager = new Teenager("Bob", "2011-03-20");
         $teenager->setPassword("correctPassword");
 
         // Act
-        $result = $teenager->authenticate("Bob", "wrongPassword");
+        $result = $teenager->authenticate($username, $password);
 
         // Assert
-        $this->assertFalse($result);
-    }
-
-    public function test_teenager_cannot_authenticate_with_wrong_username(): void
-    {
-        // Arrange
-        $teenager = new Teenager("Charlie", "2012-08-10");
-        $teenager->setPassword("password123");
-
-        // Act
-        $result = $teenager->authenticate("WrongName", "password123");
-
-        // Assert
-        $this->assertFalse($result);
+        $this->assertEquals($shouldSucceed, $result);
     }
 
     public function test_teenager_can_update_account_information(): void
@@ -63,18 +43,27 @@ class TeenagerTest extends TestCase
         $this->assertEquals("0612345678", $teenager->getPhone());
     }
 
-    public function test_teenager_must_be_younger_than_18(): void
+    #[TestWith([14, true])]
+    #[TestWith([18, false])]
+    #[TestWith([25, false])]
+    public function test_teenager_age_validation(int $age, bool $shouldSucceed): void
     {
         // Arrange
-        // Age >= 18
         $today = new DateTime();
-        $birthDate = $today->modify('-19 years')->format('Y-m-d');
+        $birthDate = $today->modify("-{$age} years")->format('Y-m-d');
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Teenager must be under 18 years old');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Teenager must be under 18 years old');
+        }
 
-        new Teenager("TooOld", $birthDate);
+        // Act
+        $teenager = new Teenager("Test", $birthDate);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertInstanceOf(Teenager::class, $teenager);
+        }
     }
 
     public function test_teenager_receives_money_on_wallet(): void

@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 use App\Transaction;
 use DateTime;
 
@@ -39,23 +40,49 @@ class TransactionTest extends TestCase
         $this->assertEquals(100, $transaction->getAmount());
     }
 
-    public function test_transaction_has_valid_types(): void
+    #[TestWith(['DEPOSIT'])]
+    #[TestWith(['WITHDRAWAL'])]
+    #[TestWith(['EXPENSE'])]
+    #[TestWith(['TRANSFER_IN'])]
+    #[TestWith(['TRANSFER_OUT'])]
+    public function test_transaction_accepts_valid_types(string $type): void
     {
         // Arrange & Act
-        $deposit = new Transaction(50, 'DEPOSIT', new DateTime(), 'Deposit');
-        $withdrawal = new Transaction(30, 'WITHDRAWAL', new DateTime(), 'Withdrawal');
-        $expense = new Transaction(20, 'EXPENSE', new DateTime(), 'Expense');
+        $transaction = new Transaction(100, $type, new DateTime(), 'Test');
 
-        // Assert 
-        $this->assertEquals('DEPOSIT', $deposit->getType());
-        $this->assertEquals('WITHDRAWAL', $withdrawal->getType());
-        $this->assertEquals('EXPENSE', $expense->getType());
+        // Assert
+        $this->assertEquals($type, $transaction->getType());
+    }
 
+    #[TestWith(['INVALID'])]
+    #[TestWith([''])]
+    #[TestWith(['PAYMENT'])]
+    public function test_transaction_rejects_invalid_types(string $invalidType): void
+    {
         // Assert & Act
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid transaction type');
 
-        new Transaction(100, 'INVALID_TYPE', new DateTime(), 'Invalid');
+        new Transaction(100, $invalidType, new DateTime(), 'Test');
+    }
+
+    #[TestWith([100.0, true])]
+    #[TestWith([0.0, false])]
+    #[TestWith([-50.0, false])]
+    public function test_transaction_amount_validation(float $amount, bool $shouldSucceed): void
+    {
+        if (!$shouldSucceed) {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('Amount must be positive');
+        }
+
+        // Arrange & Act
+        $transaction = new Transaction($amount, 'DEPOSIT', new DateTime(), 'Test');
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals($amount, $transaction->getAmount());
+        }
     }
 
     public function test_transaction_formats_date_correctly(): void

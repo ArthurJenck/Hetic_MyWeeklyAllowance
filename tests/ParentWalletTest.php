@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 use App\ParentWallet;
 use App\TeenagerWallet;
 use App\Transaction;
@@ -34,16 +35,26 @@ class ParentWalletTest extends TestCase
         $this->assertEquals(100, $wallet->getBalance());
     }
 
-    public function test_parent_wallet_cannot_deposit_negative_amount(): void
+    #[TestWith([50.0, true])]
+    #[TestWith([0.0, false])]
+    #[TestWith([-10.0, false])]
+    public function test_parent_wallet_deposit_amount_validation(float $amount, bool $shouldSucceed): void
     {
         // Arrange
         $wallet = new ParentWallet();
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Amount must be positive');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Amount must be positive');
+        }
 
-        $wallet->deposit(-50);
+        // Act
+        $wallet->deposit($amount);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals($amount, $wallet->getBalance());
+        }
     }
 
     public function test_parent_wallet_can_transfer_to_teenager_wallet(): void
@@ -61,32 +72,52 @@ class ParentWalletTest extends TestCase
         $this->assertEquals(50, $teenagerWallet->getBalance());
     }
 
-    public function test_parent_wallet_cannot_transfer_more_than_balance(): void
+    #[TestWith([40.0, true])]
+    #[TestWith([50.0, true])]
+    #[TestWith([60.0, false])]
+    public function test_parent_wallet_transfer_balance_validation(float $transferAmount, bool $shouldSucceed): void
     {
         // Arrange
         $parentWallet = new ParentWallet();
         $teenagerWallet = new TeenagerWallet(50);
-        $parentWallet->deposit(30);
+        $parentWallet->deposit(50);
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Insufficient funds');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Insufficient funds');
+        }
 
-        $parentWallet->transferTo($teenagerWallet, 50);
+        // Act
+        $parentWallet->transferTo($teenagerWallet, $transferAmount);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals(50 - $transferAmount, $parentWallet->getBalance());
+        }
     }
 
-    public function test_parent_wallet_cannot_transfer_negative_amount(): void
+    #[TestWith([50.0, true])]
+    #[TestWith([0.0, false])]
+    #[TestWith([-10.0, false])]
+    public function test_parent_wallet_transfer_amount_validation(float $amount, bool $shouldSucceed): void
     {
         // Arrange
         $parentWallet = new ParentWallet();
         $teenagerWallet = new TeenagerWallet(50);
         $parentWallet->deposit(100);
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Amount must be positive');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Amount must be positive');
+        }
 
-        $parentWallet->transferTo($teenagerWallet, -20);
+        // Act
+        $parentWallet->transferTo($teenagerWallet, $amount);
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertEquals(100 - $amount, $parentWallet->getBalance());
+        }
     }
 
     public function test_parent_wallet_receives_money_from_deleted_teenager(): void

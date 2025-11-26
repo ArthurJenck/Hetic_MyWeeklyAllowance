@@ -3,6 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\TestWith;
 use App\TransactionFactory;
 use App\Transaction;
 use App\ParentWallet;
@@ -62,17 +63,27 @@ class TransactionFactoryTest extends TestCase
         $this->assertEquals('Movie ticket', $transaction->getDescription());
     }
 
-    public function test_factory_validates_transaction_amount_positive(): void
+    #[TestWith([100.0, true])]
+    #[TestWith([0.0, false])]
+    #[TestWith([-50.0, false])]
+    public function test_factory_validates_transaction_amount_positive(float $amount, bool $shouldSucceed): void
     {
         // Arrange
         $factory = new TransactionFactory();
         $wallet = new ParentWallet();
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Amount must be positive');
+        if (!$shouldSucceed) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Amount must be positive');
+        }
 
-        $factory->createDeposit($wallet, -50, 'Invalid');
+        // Act
+        $transaction = $factory->createDeposit($wallet, $amount, 'Test');
+
+        // Assert
+        if ($shouldSucceed) {
+            $this->assertInstanceOf(Transaction::class, $transaction);
+        }
     }
 
     public function test_factory_validates_transaction_type(): void
