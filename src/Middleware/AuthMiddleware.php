@@ -21,12 +21,12 @@ class AuthMiddleware
         return JWTHelper::decodeToken($token);
     }
 
-    public static function requireAuth(string $requiredRole = null): object
+    public static function requireAuth(?string $requiredRole = null): object
     {
         $user = self::authenticate();
 
         if ($user === null) {
-            header('Location: /auth/login');
+            header('Location: /index.php/auth/login-parent');
             exit;
         }
 
