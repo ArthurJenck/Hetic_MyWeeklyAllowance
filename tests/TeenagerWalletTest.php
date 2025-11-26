@@ -4,8 +4,8 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\TestWith;
-use App\TeenagerWallet;
-use App\Transaction;
+use App\Models\TeenagerWallet;
+use App\Models\Transaction;
 use Exception;
 use DateTime;
 

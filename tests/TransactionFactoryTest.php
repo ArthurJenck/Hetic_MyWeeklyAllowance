@@ -4,10 +4,10 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\TestWith;
-use App\TransactionFactory;
-use App\Transaction;
-use App\ParentWallet;
-use App\TeenagerWallet;
+use App\Models\TransactionFactory;
+use App\Models\Transaction;
+use App\Models\ParentWallet;
+use App\Models\TeenagerWallet;
 use Exception;
 
 class TransactionFactoryTest extends TestCase

@@ -4,7 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\TestWith;
-use App\Transaction;
+use App\Models\Transaction;
 use DateTime;
 
 class TransactionTest extends TestCase

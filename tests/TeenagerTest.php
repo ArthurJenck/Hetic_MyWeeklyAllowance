@@ -4,8 +4,8 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\TestWith;
-use App\Teenager;
-use App\Wallet;
+use App\Models\Teenager;
+use App\Models\TeenagerWallet;
 use Exception;
 use DateTime;
 
@@ -69,7 +69,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_receives_money_on_wallet(): void
     {
         // Arrange
-        $walletMock = $this->createMock(Wallet::class);
+        $walletMock = $this->createMock(TeenagerWallet::class);
 
         $walletMock->expects($this->once())
             ->method('deposit')

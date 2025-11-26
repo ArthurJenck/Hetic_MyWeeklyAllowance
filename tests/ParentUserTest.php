@@ -3,10 +3,10 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use App\ParentUser;
-use App\Teenager;
-use App\ParentWallet;
-use App\TeenagerWallet;
+use App\Models\ParentUser;
+use App\Models\Teenager;
+use App\Models\ParentWallet;
+use App\Models\TeenagerWallet;
 use Exception;
 
 class ParentUserTest extends TestCase
