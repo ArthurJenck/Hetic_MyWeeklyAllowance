@@ -12,7 +12,7 @@
     <header>
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h1>MyWeeklyAllowance</h1>
+                <h1>My Weekly Allowance</h1>
                 <nav>
                     <a href="/auth/login-parent">Connexion Parent</a>
                     <a href="/auth/login-teenager">Connexion Ado</a>
