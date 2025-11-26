@@ -18,4 +18,4 @@ jobs:
           server: 195.35.49.196
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: htdocs/
+          server-dir: domains/arthurjenck.com/public_html/my_weekly_allowance/
