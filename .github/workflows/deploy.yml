@@ -20,8 +20,5 @@ jobs:
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
 
-          # dossier source local
           local-dir: ./
-
-          # dossier cible sur InfinityFree
           git-ftp-args: --remote-root /htdocs/
