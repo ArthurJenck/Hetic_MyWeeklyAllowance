@@ -103,7 +103,7 @@ class ParentUserTest extends TestCase
     {
         // Arrange
         $parent = new ParentUser("Parent");
-        $teenager = new Teenager("Alice", "2010-05-15");
+        $teenager = new Teenager("Alice", "2010-05-15", "alice@test.com");
         $parent->addTeenager($teenager);
 
         // Act
@@ -117,7 +117,7 @@ class ParentUserTest extends TestCase
     {
         // Arrange
         $parent = new ParentUser("Parent");
-        $teenager = new Teenager("Bob", "2012-03-20");
+        $teenager = new Teenager("Bob", "2012-03-20", "bob@test.com");
         $parent->addTeenager($teenager);
 
         // Act
@@ -133,7 +133,7 @@ class ParentUserTest extends TestCase
         $parent = new ParentUser("Parent");
         $parent->getWallet()->deposit(100);
 
-        $teenager = new Teenager("Charlie", "2011-08-10");
+        $teenager = new Teenager("Charlie", "2011-08-10", "charlie@test.com");
         $parent->addTeenager($teenager);
         $teenager->receiveMoney(50);
 
@@ -150,7 +150,7 @@ class ParentUserTest extends TestCase
     {
         // Arrange
         $parent = new ParentUser("Parent");
-        $teenager = new Teenager("David", "2010-01-01");
+        $teenager = new Teenager("David", "2010-01-01", "david@test.com");
         $parent->addTeenager($teenager);
 
         // Act
@@ -176,7 +176,7 @@ class ParentUserTest extends TestCase
     {
         // Arrange
         $parent = new ParentUser("Parent");
-        $teenager = new Teenager("Alice", "2010-05-15");
+        $teenager = new Teenager("Alice", "2010-05-15", "alice@test.com");
         $parent->addTeenager($teenager);
         $parent->getWallet()->deposit(100);
 
@@ -186,13 +186,14 @@ class ParentUserTest extends TestCase
         // Assert
         $this->assertEquals(50, $parent->getWallet()->getBalance());
         $this->assertEquals(50, $teenager->getWallet()->getBalance());
+        $this->assertEquals(50, $teenager->getWallet()->getWeeklyRemainingBalance());
     }
 
     public function test_parent_can_view_teenager_expense_history(): void
     {
         // Arrange
         $parent = new ParentUser("Parent");
-        $teenager = new Teenager("Emma", "2011-06-15");
+        $teenager = new Teenager("Emma", "2011-06-15", "emma@test.com");
         $parent->addTeenager($teenager);
 
         $teenager->receiveMoney(50);

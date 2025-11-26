@@ -113,6 +113,7 @@ class TransactionFactoryTest extends TestCase
         $this->assertInstanceOf(Transaction::class, $transaction);
         $this->assertEquals(20, $parentWallet->getBalance());
         $this->assertEquals(80, $teenagerWallet->getBalance());
+        $this->assertEquals(80, $teenagerWallet->getWeeklyRemainingBalance());
     }
 
     public function test_factory_rejects_parent_transfer_if_insufficient_balance(): void
@@ -207,5 +208,7 @@ class TransactionFactoryTest extends TestCase
         $this->assertCount(2, $history);
         $this->assertEquals('DEPOSIT', $history[0]->getType());
         $this->assertEquals('TRANSFER_OUT', $history[1]->getType());
+        $this->assertEquals(30, $teenagerWallet->getBalance());
+        $this->assertEquals(30, $teenagerWallet->getWeeklyRemainingBalance());
     }
 }

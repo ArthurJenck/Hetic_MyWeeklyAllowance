@@ -11,19 +11,19 @@ use DateTime;
 
 class TeenagerTest extends TestCase
 {
-    #[TestWith(['Alice', 'correctPassword', true])]
-    #[TestWith(['WrongName', 'correctPassword', false])]
-    #[TestWith(['Alice', 'wrongPassword', false])]
+    #[TestWith(['alice@example.com', 'correctPassword', true])]
+    #[TestWith(['wrong@example.com', 'correctPassword', false])]
+    #[TestWith(['alice@example.com', 'wrongPassword', false])]
     #[TestWith(['', 'correctPassword', false])]
-    #[TestWith(['Alice', '', false])]
-    public function test_teenager_authentication(string $username, string $password, bool $shouldSucceed): void
+    #[TestWith(['alice@example.com', '', false])]
+    public function test_teenager_authentication(string $email, string $password, bool $shouldSucceed): void
     {
         // Arrange
-        $teenager = new Teenager("Alice", "2010-05-15");
+        $teenager = new Teenager("Alice", "2010-05-15", "alice@example.com");
         $teenager->setPassword("correctPassword");
 
         // Act
-        $result = $teenager->authenticate($username, $password);
+        $result = $teenager->authenticate($email, $password);
 
         // Assert
         $this->assertEquals($shouldSucceed, $result);
@@ -32,7 +32,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_can_update_account_information(): void
     {
         // Arrange
-        $teenager = new Teenager("David", "2010-01-01");
+        $teenager = new Teenager("David", "2010-01-01", "david@test.com");
 
         // Act
         $teenager->updateEmail("david@example.com");
@@ -58,7 +58,7 @@ class TeenagerTest extends TestCase
         }
 
         // Act
-        $teenager = new Teenager("Test", $birthDate);
+        $teenager = new Teenager("Test", $birthDate, "test@test.com");
 
         // Assert
         if ($shouldSucceed) {
@@ -75,7 +75,7 @@ class TeenagerTest extends TestCase
             ->method('deposit')
             ->with(50);
 
-        $teenager = new Teenager("Bob", "2010-01-01", $walletMock);
+        $teenager = new Teenager("Bob", "2010-01-01", "bob@test.com", $walletMock);
 
         // Act
         $teenager->receiveMoney(50);
@@ -84,7 +84,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_can_view_total_balance(): void
     {
         // Arrange
-        $teenager = new Teenager("Emma", "2011-06-15");
+        $teenager = new Teenager("Emma", "2011-06-15", "emma@test.com");
         $teenager->receiveMoney(75);
 
         // Act
@@ -97,7 +97,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_can_view_weekly_remaining_allowance(): void
     {
         // Arrange
-        $teenager = new Teenager("Frank", "2012-02-28");
+        $teenager = new Teenager("Frank", "2012-02-28", "frank@test.com");
         $teenager->getWallet()->setWeeklyAllowance(50);
         $teenager->receiveMoney(50);
         $teenager->getWallet()->withdraw(20);
@@ -112,7 +112,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_can_spend_money_within_limits(): void
     {
         // Arrange
-        $teenager = new Teenager("Grace", "2010-09-05");
+        $teenager = new Teenager("Grace", "2010-09-05", "grace@test.com");
         $teenager->getWallet()->setWeeklyAllowance(50);
         $teenager->receiveMoney(50);
 
@@ -127,7 +127,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_cannot_spend_beyond_weekly_limit(): void
     {
         // Arrange
-        $teenager = new Teenager("Henry", "2011-04-12");
+        $teenager = new Teenager("Henry", "2011-04-12", "henry@test.com");
         $teenager->getWallet()->setWeeklyAllowance(50);
         $teenager->receiveMoney(100);
         $teenager->spendMoney(40, "Games");
@@ -136,15 +136,15 @@ class TeenagerTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Weekly allowance exceeded');
 
-        $teenager->spendMoney(20, "More games"); // 40 + 20 > 50
+        $teenager->spendMoney(20, "More games");
     }
 
     public function test_teenager_cannot_spend_beyond_total_balance(): void
     {
         // Arrange
-        $teenager = new Teenager("Ivy", "2012-07-18");
-        $teenager->getWallet()->setWeeklyAllowance(100); // Grande allocation
-        $teenager->receiveMoney(30); // Mais faible solde total
+        $teenager = new Teenager("Ivy", "2012-07-18", "ivy@test.com");
+        $teenager->getWallet()->setWeeklyAllowance(100);
+        $teenager->receiveMoney(30);
 
         // Assert & Act
         $this->expectException(Exception::class);
@@ -156,7 +156,7 @@ class TeenagerTest extends TestCase
     public function test_teenager_can_view_expense_history(): void
     {
         // Arrange
-        $teenager = new Teenager("Jack", "2010-11-22");
+        $teenager = new Teenager("Jack", "2010-11-22", "jack@test.com");
         $teenager->getWallet()->setWeeklyAllowance(100);
         $teenager->receiveMoney(100);
 

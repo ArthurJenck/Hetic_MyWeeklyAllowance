@@ -86,31 +86,44 @@ class TeenagerWalletTest extends TestCase
         $wallet = new TeenagerWallet(50);
         $wallet->deposit(50);
         $wallet->withdraw(30);
-
-        // Solde restant : 20, allocation hebdo restante : 20
         $this->assertEquals(20, $wallet->getWeeklyRemainingBalance());
+        $this->assertEquals(20, $wallet->getBalance());
 
         // Act
         $wallet->resetWeeklyAllowance();
 
         // Assert
-        $this->assertEquals(50, $wallet->getWeeklyRemainingBalance());
-        $this->assertEquals(70, $wallet->getBalance()); // 20 + 50
+        $this->assertEquals(20, $wallet->getWeeklyRemainingBalance());
+        $this->assertEquals(20, $wallet->getBalance());
     }
 
     public function test_teenager_wallet_reset_does_not_exceed_allowance(): void
     {
         // Arrange
         $wallet = new TeenagerWallet(30);
-        $wallet->deposit(30);
+        $wallet->deposit(100);
 
-        // Act - Reset hebdomadaire
+        // Act
         $wallet->resetWeeklyAllowance();
 
         // Assert
-        // Le solde total augmente mais l'allocation reste plafonnée
         $this->assertEquals(30, $wallet->getWeeklyRemainingBalance());
-        $this->assertEquals(60, $wallet->getBalance());
+        $this->assertEquals(100, $wallet->getBalance());
+    }
+
+    public function test_teenager_wallet_reset_caps_to_balance_when_lower_than_allowance(): void
+    {
+        // Arrange
+        $wallet = new TeenagerWallet(50);
+        $wallet->deposit(20);
+        $wallet->withdraw(10);
+
+        // Act
+        $wallet->resetWeeklyAllowance();
+
+        // Assert
+        $this->assertEquals(10, $wallet->getWeeklyRemainingBalance());
+        $this->assertEquals(10, $wallet->getBalance());
     }
 
     #[TestWith([20.0, true])]
