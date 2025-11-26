@@ -70,6 +70,7 @@ class ParentWalletTest extends TestCase
         // Assert
         $this->assertEquals(50, $parentWallet->getBalance());
         $this->assertEquals(50, $teenagerWallet->getBalance());
+        $this->assertEquals(50, $teenagerWallet->getWeeklyRemainingBalance());
     }
 
     #[TestWith([40.0, true])]
@@ -174,6 +175,10 @@ class ParentWalletTest extends TestCase
 
         // Assert
         $this->assertEquals(100, $parentWallet->getBalance());
+        $this->assertEquals(70, $teenagerWallet1->getBalance());
+        $this->assertEquals(50, $teenagerWallet1->getWeeklyRemainingBalance());
+        $this->assertEquals(30, $teenagerWallet2->getBalance());
+        $this->assertEquals(30, $teenagerWallet2->getWeeklyRemainingBalance());
         $history = $parentWallet->getTransactionHistory();
         $transfers = array_filter($history, fn($t) => $t->getType() === 'TRANSFER_OUT');
         $this->assertCount(3, $transfers);
