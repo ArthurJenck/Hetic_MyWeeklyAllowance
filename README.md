@@ -1,6 +1,6 @@
 # Hetic - Projet MyWeeklyAllowance
 
-## Énoncé
+## Objectif
 
 Vous allez concevoir un module de gestion d’argent de poche pour adolescents, selon la méthode TDD (Test Driven Development).
 Votre mission : commencer par les tests unitaires, puis développer le code étape par étape jusqu’à ce que tous les tests passent.
@@ -23,6 +23,11 @@ Chaque adolescent a un compte d’argent de poche, et chaque parent peut :
 - Phase 2 – Implémentation du code (GREEN)
 - Phase 3 – Refactoring
 - Phase 4 – Vérification de la couverture
+
+## Infos pratiques
+
+- Dans la continuité de la démarche TDD, une branche tests-only contient le projet avec les tests uniquement, avant d'avoir été merge sur main.
+- Auteur : **Arthur JENCK**
 
 ## Installation et Configuration
 
