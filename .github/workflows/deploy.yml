@@ -1,24 +1,21 @@
-name: Deploy PHP to InfinityFree
+name: Deploy to FTP
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   ftp-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Upload to InfinityFree via FTP
+      - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v3.1.1
         with:
-          ftp-server: ${{ secrets.FTP_HOST }}
+          ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
-
-          local-dir: ./
-          git-ftp-args: --remote-root /htdocs/
+          local-dir: .
+          server-dir: /htdocs/
