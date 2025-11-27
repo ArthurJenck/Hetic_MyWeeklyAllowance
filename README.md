@@ -85,15 +85,15 @@ PHPUnit 10.5.58 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.4.15 with Xdebug 3.4.7
 
-OK (167 tests, 322 assertions)
+OK (218 tests, 401 assertions)
 
 Code Coverage Report:
-  2025-11-27 11:50:43
+  2025-11-27 14:56:29
 
  Summary:
-  Classes: 47.37% (9/19)
-  Methods: 81.82% (99/121)
-  Lines:   90.10% (464/515)
+  Classes: 73.68% (14/19)
+  Methods: 95.04% (115/121)
+  Lines:   98.50% (524/532)
 ```
 
 ### Lancer le projet en local
