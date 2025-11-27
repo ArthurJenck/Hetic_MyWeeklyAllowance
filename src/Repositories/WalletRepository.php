@@ -9,9 +9,9 @@ class WalletRepository
 {
     private PDO $db;
 
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = $db ?? Database::getInstance()->getConnection();
     }
 
     public function create(int $userId, float $weeklyAllowance = 0.00): int
@@ -67,11 +67,14 @@ class WalletRepository
         $stmt = $this->db->prepare("
             UPDATE wallets 
             SET weekly_remaining = weekly_allowance, 
-                last_reset_date = CURDATE(),
+                last_reset_date = :reset_date,
                 balance = balance + weekly_allowance
             WHERE id = :id
         ");
 
-        return $stmt->execute(['id' => $walletId]);
+        return $stmt->execute([
+            'id' => $walletId,
+            'reset_date' => date('Y-m-d')
+        ]);
     }
 }

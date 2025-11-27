@@ -11,10 +11,10 @@ class AuthController
     private UserRepository $userRepo;
     private WalletRepository $walletRepo;
 
-    public function __construct()
+    public function __construct(?UserRepository $userRepo = null, ?WalletRepository $walletRepo = null)
     {
-        $this->userRepo = new UserRepository();
-        $this->walletRepo = new WalletRepository();
+        $this->userRepo = $userRepo ?? new UserRepository();
+        $this->walletRepo = $walletRepo ?? new WalletRepository();
     }
 
     public function showLoginParent(): void
@@ -44,11 +44,11 @@ class AuthController
             setcookie('auth_token', $token, time() + 86400, '/', '', false, true);
 
             header('Location: /parent/dashboard');
-            exit;
+            return;
         }
 
         header('Location: /auth/login-parent?error=1');
-        exit;
+        return;
     }
 
     public function loginTeenager(): void
@@ -62,11 +62,11 @@ class AuthController
             $token = JWTHelper::generateToken($user['id'], 'teenager');
             setcookie('auth_token', $token, time() + 86400, '/', '', false, true);
             header('Location: /teenager/dashboard');
-            exit;
+            return;
         }
 
         header('Location: /auth/login-teenager?error=1');
-        exit;
+        return;
     }
 
     public function register(): void
@@ -81,7 +81,7 @@ class AuthController
             $existingUser = $this->userRepo->findParentByEmail($email);
             if ($existingUser) {
                 header('Location: /auth/login-parent?error=email_exists');
-                exit;
+                return;
             }
 
             try {
@@ -98,13 +98,13 @@ class AuthController
             }
         }
 
-        exit;
+        return;
     }
 
     public function logout(): void
     {
         setcookie('auth_token', '', time() - 3600, '/');
         header('Location: /auth/login-parent');
-        exit;
+        return;
     }
 }

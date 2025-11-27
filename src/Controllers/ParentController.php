@@ -13,11 +13,14 @@ class ParentController
     private WalletRepository $walletRepo;
     private TransactionRepository $transactionRepo;
 
-    public function __construct()
-    {
-        $this->userRepo = new UserRepository();
-        $this->walletRepo = new WalletRepository();
-        $this->transactionRepo = new TransactionRepository();
+    public function __construct(
+        ?UserRepository $userRepo = null,
+        ?WalletRepository $walletRepo = null,
+        ?TransactionRepository $transactionRepo = null
+    ) {
+        $this->userRepo = $userRepo ?? new UserRepository();
+        $this->walletRepo = $walletRepo ?? new WalletRepository();
+        $this->transactionRepo = $transactionRepo ?? new TransactionRepository();
     }
 
     public function dashboard(): void
@@ -62,7 +65,7 @@ class ParentController
 
                 if ($parentWallet['balance'] < $initialAmount) {
                     header('Location: /parent/dashboard?success=teenager_added&warning=insufficient_funds_for_initial');
-                    exit;
+                    return;
                 }
 
                 $teenagerWallet = $this->walletRepo->findByUserId($teenagerId);
@@ -91,7 +94,7 @@ class ParentController
             header('Location: /parent/add-teenager?error=db');
         }
 
-        exit;
+        return;
     }
 
     public function showTeenager(): void
@@ -117,7 +120,7 @@ class ParentController
         $this->walletRepo->setWeeklyAllowance($wallet['id'], $amount);
 
         header('Location: /parent/teenager?id=' . $teenagerId . '&success=allowance_set');
-        exit;
+        return;
     }
 
     public function transferMoney(): void
@@ -138,7 +141,7 @@ class ParentController
 
         if ($parentWallet['balance'] < $amount) {
             header('Location: /parent/teenager?id=' . $teenagerId . '&error=insufficient_funds');
-            exit;
+            return;
         }
 
         $this->walletRepo->updateBalance($parentWallet['id'], $parentWallet['balance'] - $amount);
@@ -154,7 +157,7 @@ class ParentController
         $this->transactionRepo->create($teenagerWallet['id'], $amount, 'TRANSFER_IN', $descriptionToTeenager);
 
         header('Location: /parent/teenager?id=' . $teenagerId . '&success=money_transferred');
-        exit;
+        return;
     }
 
     public function deleteTeenager(): void
@@ -176,7 +179,7 @@ class ParentController
         $this->userRepo->softDelete($teenagerId);
 
         header('Location: /parent/dashboard?success=teenager_deleted');
-        exit;
+        return;
     }
 
     public function showDeposit(): void
@@ -193,7 +196,7 @@ class ParentController
 
         if ($amount <= 0) {
             header('Location: /parent/deposit?error=invalid_amount');
-            exit;
+            return;
         }
 
         $parentWallet = $this->walletRepo->findByUserId($user->userId);
@@ -201,6 +204,6 @@ class ParentController
         $this->transactionRepo->create($parentWallet['id'], $amount, 'DEPOSIT', 'Dépôt sur le wallet commun');
 
         header('Location: /parent/dashboard?success=deposit_made');
-        exit;
+        return;
     }
 }

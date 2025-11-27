@@ -9,9 +9,9 @@ class TransactionRepository
 {
     private PDO $db;
 
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = $db ?? Database::getInstance()->getConnection();
     }
 
     public function create(int $walletId, float $amount, string $type, string $description): int
@@ -20,14 +20,14 @@ class TransactionRepository
             INSERT INTO transactions (wallet_id, amount, type, description) 
             VALUES (:wallet_id, :amount, :type, :description)
         ");
-        
+
         $stmt->execute([
             'wallet_id' => $walletId,
             'amount' => $amount,
             'type' => $type,
             'description' => $description
         ]);
-        
+
         return (int) $this->db->lastInsertId();
     }
 
@@ -38,7 +38,7 @@ class TransactionRepository
             WHERE wallet_id = :wallet_id 
             ORDER BY created_at DESC
         ");
-        
+
         $stmt->execute(['wallet_id' => $walletId]);
         return $stmt->fetchAll();
     }
@@ -50,9 +50,8 @@ class TransactionRepository
             WHERE wallet_id = :wallet_id AND type = 'EXPENSE' 
             ORDER BY created_at DESC
         ");
-        
+
         $stmt->execute(['wallet_id' => $walletId]);
         return $stmt->fetchAll();
     }
 }
-

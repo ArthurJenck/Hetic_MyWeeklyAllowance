@@ -11,16 +11,18 @@ class TeenagerController
     private WalletRepository $walletRepo;
     private TransactionRepository $transactionRepo;
 
-    public function __construct()
-    {
-        $this->walletRepo = new WalletRepository();
-        $this->transactionRepo = new TransactionRepository();
+    public function __construct(
+        ?WalletRepository $walletRepo = null,
+        ?TransactionRepository $transactionRepo = null
+    ) {
+        $this->walletRepo = $walletRepo ?? new WalletRepository();
+        $this->transactionRepo = $transactionRepo ?? new TransactionRepository();
     }
 
     public function dashboard(): void
     {
         $user = AuthMiddleware::requireTeenager();
-        
+
         $wallet = $this->walletRepo->findByUserId($user->userId);
         $transactions = $this->transactionRepo->findByWalletId($wallet['id']);
 
@@ -30,7 +32,7 @@ class TeenagerController
     public function expense(): void
     {
         $user = AuthMiddleware::requireTeenager();
-        
+
         $amount = floatval($_POST['amount'] ?? 0);
         $description = $_POST['description'] ?? 'Expense';
 
@@ -38,21 +40,21 @@ class TeenagerController
 
         if ($amount <= 0) {
             header('Location: /teenager/dashboard?error=invalid_amount');
-            exit;
+            return;
         }
 
         if ($amount > $wallet['balance']) {
             header('Location: /teenager/dashboard?error=insufficient_funds');
-            exit;
+            return;
         }
 
         if ($wallet['weekly_allowance'] > 0 && $amount > $wallet['weekly_remaining']) {
             header('Location: /teenager/dashboard?error=weekly_limit_exceeded');
-            exit;
+            return;
         }
 
         $this->walletRepo->updateBalance($wallet['id'], $wallet['balance'] - $amount);
-        
+
         if ($wallet['weekly_allowance'] > 0) {
             $this->walletRepo->updateWeeklyRemaining($wallet['id'], $wallet['weekly_remaining'] - $amount);
         }
@@ -60,17 +62,16 @@ class TeenagerController
         $this->transactionRepo->create($wallet['id'], $amount, 'EXPENSE', $description);
 
         header('Location: /teenager/dashboard?success=expense_recorded');
-        exit;
+        return;
     }
 
     public function history(): void
     {
         $user = AuthMiddleware::requireTeenager();
-        
+
         $wallet = $this->walletRepo->findByUserId($user->userId);
         $transactions = $this->transactionRepo->findByWalletId($wallet['id']);
 
         require_once __DIR__ . '/../../views/teenager/history.php';
     }
 }
-
