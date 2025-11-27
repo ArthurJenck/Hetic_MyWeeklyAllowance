@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'MyWeeklyAllowance' ?></title>
+    <title><?= $title ?? 'My Weekly Allowance' ?></title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
     <header>
         <div class="container">
-            <h1>MyWeeklyAllowance</h1>
-            <nav>
-                <?php if (isset($user)): ?>
-                    <?php if ($user->role === 'parent'): ?>
-                        <a href="/parent/dashboard">Dashboard</a>
-                        <a href="/parent/add-teenager">Ajouter Ado</a>
+            <div class="header-content">
+                <h1>
+                    <?php if (isset($user)): ?>
+                        <?php if ($user->role === 'parent'): ?>
+                            <a href="/parent/dashboard">My Weekly Allowance</a>
+                        <?php else: ?>
+                            <a href="/teenager/dashboard">My Weekly Allowance</a>
+                        <?php endif; ?>
                     <?php else: ?>
-                        <a href="/teenager/dashboard">Dashboard</a>
-                        <a href="/teenager/history">Historique</a>
+                        <a href="/">My Weekly Allowance</a>
                     <?php endif; ?>
-                    <a href="/auth/logout">Déconnexion</a>
-                <?php endif; ?>
-            </nav>
+                </h1>
+                <nav>
+                    <?php if (isset($user)): ?>
+                        <?php if ($user->role === 'parent'): ?>
+                            <a href="/parent/dashboard">Dashboard</a>
+                            <a href="/parent/add-teenager">Ajouter Ado</a>
+                            <a href="/auth/logout" class="btn-ghost">Déconnexion</a>
+                        <?php else: ?>
+                            <a href="/teenager/dashboard">Dashboard</a>
+                            <a href="/teenager/history">Historique</a>
+                            <a href="/auth/logout" class="btn-ghost">Déconnexion</a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </nav>
+            </div>
         </div>
     </header>
 
@@ -31,9 +46,9 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 MyWeeklyAllowance - Projet Hetic TDD</p>
+            <p>&copy; 2025 My Weekly Allowance - Projet Hetic TDD</p>
         </div>
     </footer>
 </body>
-</html>
 
+</html>

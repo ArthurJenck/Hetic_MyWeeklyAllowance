@@ -8,7 +8,7 @@ ob_start();
     <h2>Bienvenue, <?= htmlspecialchars($parentData['name']) ?> !</h2>
 
     <?php if (isset($_GET['registered'])): ?>
-        <div class="alert alert-success">Inscription réussie ! Bienvenue sur MyWeeklyAllowance.</div>
+        <div class="alert alert-success">Inscription réussie ! Bienvenue sur My Weekly Allowance.</div>
     <?php endif; ?>
 
     <?php if (isset($_GET['success'])): ?>
@@ -30,23 +30,27 @@ ob_start();
         ];
         $warningMsg = $warningMessages[$_GET['warning']] ?? 'Attention';
         ?>
-        <div class="alert" style="background-color: #FFF3CD; color: #856404; border-left: 4px solid #FFC107;"><?= $warningMsg ?></div>
+        <div class="alert alert-warning"><?= $warningMsg ?></div>
     <?php endif; ?>
 </div>
 
 <div class="card">
     <h3>Mon Wallet Commun</h3>
     <div class="wallet-info">
-        <p class="balance"><strong>Solde:</strong> <?= $wallet ? number_format($wallet['balance'], 2) : '0.00' ?> €</p>
+        <p class="balance"><?= $wallet ? number_format($wallet['balance'], 2) : '0.00' ?> €</p>
+        <p class="text-muted text-sm">Solde disponible pour vos adolescents</p>
     </div>
-    <a href="/parent/deposit" class="btn btn-primary">Déposer de l'Argent</a>
+    <a href="/parent/deposit" class="btn btn-primary mt-2">Déposer de l'Argent</a>
 </div>
 
 <div class="card">
-    <h3>Mes Adolescents</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 0;">Mes Adolescents</h3>
+        <a href="/parent/add-teenager" class="btn btn-primary btn-sm">Ajouter un Adolescent</a>
+    </div>
 
     <?php if (empty($teenagers)): ?>
-        <p>Aucun adolescent ajouté pour le moment.</p>
+        <p class="text-muted">Aucun adolescent ajouté pour le moment.</p>
     <?php else: ?>
         <table>
             <thead>
@@ -61,7 +65,7 @@ ob_start();
             <tbody>
                 <?php foreach ($teenagers as $teenager): ?>
                     <tr>
-                        <td><?= htmlspecialchars($teenager['name']) ?></td>
+                        <td><strong><?= htmlspecialchars($teenager['name']) ?></strong></td>
                         <td><?= $teenager['wallet'] ? number_format($teenager['wallet']['balance'], 2) : '0.00' ?> €</td>
                         <td><?= $teenager['wallet'] ? number_format($teenager['wallet']['weekly_allowance'], 2) : '0.00' ?> €</td>
                         <td><?= $teenager['wallet'] ? number_format($teenager['wallet']['weekly_remaining'], 2) : '0.00' ?> €</td>
@@ -73,8 +77,6 @@ ob_start();
             </tbody>
         </table>
     <?php endif; ?>
-
-    <a href="/parent/add-teenager" class="btn btn-primary">Ajouter un Adolescent</a>
 </div>
 
 <?php

@@ -1,4 +1,4 @@
-# Hetic - Projet MyWeeklyAllowance
+# Hetic - Projet My Weekly Allowance
 
 ## Objectif
 
@@ -7,9 +7,9 @@ Votre mission : commencer par les tests unitaires, puis développer le code éta
 
 Votre objectif : au moins 85 % de couverture de code.
 
-### Contexte du projet : MyWeeklyAllowance
+### Contexte du projet : My Weekly Allowance
 
-L’application MyWeeklyAllowance permet aux parents de gérer un “porte-monnaie virtuel” pour leurs ados.
+L’application My Weekly Allowance permet aux parents de gérer un “porte-monnaie virtuel” pour leurs ados.
 Chaque adolescent a un compte d’argent de poche, et chaque parent peut :
 
 - créer un compte pour un ado,

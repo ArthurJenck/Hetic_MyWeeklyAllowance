@@ -4,7 +4,7 @@ $user = App\Middleware\AuthMiddleware::authenticate();
 ob_start();
 ?>
 
-<div class="card">
+<div class="card" style="max-width: 640px; margin: 2rem auto;">
     <h2>Ajouter un Adolescent</h2>
 
     <?php if (isset($_GET['error']) && $_GET['error'] === 'db'): ?>
@@ -14,7 +14,7 @@ ob_start();
     <form method="POST" action="/parent/add-teenager">
         <div class="form-group">
             <label for="name">Nom</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" placeholder="Marie Dupont" required>
         </div>
 
         <div class="form-group">
@@ -24,27 +24,32 @@ ob_start();
 
         <div class="form-group">
             <label for="email">Email de l'adolescent</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="marie@example.com" required>
+            <small>Cet email servira pour la connexion de l'adolescent</small>
         </div>
 
         <div class="form-group">
             <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+            <small>Mot de passe pour le compte de l'adolescent</small>
         </div>
 
         <div class="form-group">
             <label for="weekly_allowance">Allocation hebdomadaire (€)</label>
-            <input type="number" step="0.01" id="weekly_allowance" name="weekly_allowance" value="0" required>
+            <input type="number" step="0.01" id="weekly_allowance" name="weekly_allowance" value="0" placeholder="20.00" required>
+            <small>Montant que l'adolescent pourra dépenser chaque semaine</small>
         </div>
 
         <div class="form-group">
             <label for="initial_amount">Montant initial à transférer (€) - Optionnel</label>
             <input type="number" step="0.01" id="initial_amount" name="initial_amount" value="0" min="0" placeholder="0.00">
-            <small style="color: #7F8C8D;">L'argent sera transféré depuis votre wallet commun</small>
+            <small>L'argent sera transféré depuis votre wallet commun</small>
         </div>
 
-        <button type="submit" class="btn btn-primary">Ajouter</button>
-        <a href="/parent/dashboard" class="btn">Annuler</a>
+        <div class="btn-group" style="margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Ajouter l'adolescent</button>
+            <a href="/parent/dashboard" class="btn btn-outline">Annuler</a>
+        </div>
     </form>
 </div>
 

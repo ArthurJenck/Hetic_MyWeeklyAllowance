@@ -3,7 +3,7 @@ $title = 'Connexion Parent';
 ob_start();
 ?>
 
-<div class="card">
+<div class="card" style="max-width: 480px; margin: 2rem auto;">
     <h2>Connexion Parent</h2>
 
     <?php if (isset($_GET['error'])): ?>
@@ -20,19 +20,23 @@ ob_start();
     <form method="POST" action="/auth/login-parent">
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="parent@example.com" required>
         </div>
 
         <div class="form-group">
             <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Se connecter</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
     </form>
 
-    <p>Pas encore de compte ? <a href="/auth/register">S'inscrire</a></p>
-    <p><a href="/auth/login-teenager">Connexion Adolescent</a></p>
+    <p class="text-center text-muted" style="margin-top: 1.5rem;">
+        Pas encore de compte ? <a href="/auth/register" style="color: hsl(var(--primary));">S'inscrire</a>
+    </p>
+    <p class="text-center text-muted">
+        <a href="/auth/login-teenager" style="color: hsl(var(--foreground-muted));">Connexion Adolescent</a>
+    </p>
 </div>
 
 <?php

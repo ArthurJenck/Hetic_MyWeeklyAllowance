@@ -5,10 +5,13 @@ ob_start();
 ?>
 
 <div class="card">
-    <h2>Historique Complet</h2>
-    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 style="margin-bottom: 0;">Historique Complet</h2>
+        <a href="/teenager/dashboard" class="btn btn-sm btn-outline">← Retour</a>
+    </div>
+
     <?php if (empty($transactions)): ?>
-        <p>Aucune transaction pour le moment.</p>
+        <p class="text-muted">Aucune transaction pour le moment.</p>
     <?php else: ?>
         <table>
             <thead>
@@ -31,12 +34,9 @@ ob_start();
             </tbody>
         </table>
     <?php endif; ?>
-    
-    <a href="/teenager/dashboard" class="btn">Retour au Dashboard</a>
 </div>
 
 <?php
 $content = ob_get_clean();
 require_once __DIR__ . '/../layout.php';
 ?>
-

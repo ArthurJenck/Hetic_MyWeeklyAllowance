@@ -15,9 +15,15 @@ ob_start();
         <div class="alert alert-error"><?= \App\Helpers\ErrorMessages::get($_GET['error']) ?></div>
     <?php endif; ?>
 
-    <div class="wallet-info">
-        <p><strong>Allocation Hebdo:</strong> <?= number_format($wallet['weekly_allowance'], 2) ?> €</p>
-        <p><strong>Reste Cette Semaine:</strong> <?= number_format($wallet['weekly_remaining'], 2) ?> €</p>
+    <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-top: 1.5rem;">
+        <div class="stat-card">
+            <div class="stat-label">Allocation Hebdo</div>
+            <div class="stat-value"><?= number_format($wallet['weekly_allowance'], 2) ?> €</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Reste Cette Semaine</div>
+            <div class="stat-value" style="color: hsl(var(--primary));"><?= number_format($wallet['weekly_remaining'], 2) ?> €</div>
+        </div>
     </div>
 </div>
 
@@ -26,20 +32,25 @@ ob_start();
     <form method="POST" action="/teenager/expense">
         <div class="form-group">
             <label for="amount">Montant (€)</label>
-            <input type="number" step="0.01" id="amount" name="amount" required>
+            <input type="number" step="0.01" id="amount" name="amount" placeholder="10.50" required>
         </div>
         <div class="form-group">
             <label for="description">Description</label>
             <input type="text" id="description" name="description" placeholder="Ex: Cinéma, Snacks..." required>
         </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="submit" class="btn btn-primary">Enregistrer la dépense</button>
     </form>
 </div>
 
 <div class="card">
-    <h3>Mes Dernières Transactions</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 0;">Mes Dernières Transactions</h3>
+        <?php if (!empty($transactions)): ?>
+            <a href="/teenager/history" class="btn btn-sm btn-outline">Voir tout</a>
+        <?php endif; ?>
+    </div>
     <?php if (empty($transactions)): ?>
-        <p>Aucune transaction pour le moment.</p>
+        <p class="text-muted">Aucune transaction pour le moment.</p>
     <?php else: ?>
         <table>
             <thead>
@@ -61,7 +72,6 @@ ob_start();
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <a href="/teenager/history" class="btn">Voir tout l'historique</a>
     <?php endif; ?>
 </div>
 

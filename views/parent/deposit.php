@@ -4,27 +4,27 @@ $user = App\Middleware\AuthMiddleware::authenticate();
 ob_start();
 ?>
 
-<div class="card">
+<div class="card" style="max-width: 640px; margin: 2rem auto;">
     <h2>Déposer de l'Argent</h2>
 
     <?php if (isset($_GET['error'])): ?>
         <div class="alert alert-error"><?= \App\Helpers\ErrorMessages::get($_GET['error']) ?></div>
     <?php endif; ?>
 
-    <p>Ajoutez des fonds à votre wallet commun pour les redistribuer à vos adolescents.</p>
+    <p class="text-muted">Ajoutez des fonds à votre wallet commun pour les redistribuer à vos adolescents.</p>
 </div>
 
-<div class="card">
+<div class="card" style="max-width: 640px; margin: 2rem auto;">
     <h3>Montant du Dépôt</h3>
     <form method="POST" action="/parent/deposit">
         <div class="form-group">
             <label for="amount">Montant (€) *</label>
-            <input type="number" step="0.01" id="amount" name="amount" min="0.01" required>
+            <input type="number" step="0.01" id="amount" name="amount" min="0.01" placeholder="50.00" required>
         </div>
 
-        <div class="card" style="background: #FFF9E6; border: 1px solid #FFD700; margin: 1.5rem 0;">
+        <div class="info-card">
             <h4>Simulation Paiement par Carte Bancaire</h4>
-            <p style="font-size: 0.9rem; color: #856404; margin-bottom: 1rem;">
+            <p>
                 <strong>Note :</strong> Cette section est purement informative. Aucune carte n'est débitée. Seul le montant ci-dessus sera ajouté à votre wallet.
             </p>
 
@@ -33,7 +33,7 @@ ob_start();
                 <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="grid-2">
                 <div class="form-group">
                     <label for="card_expiry">Date d'expiration</label>
                     <input type="text" id="card_expiry" name="card_expiry" placeholder="MM/AA" maxlength="5">
@@ -45,9 +45,9 @@ ob_start();
             </div>
         </div>
 
-        <div style="display: flex; gap: 1rem;">
+        <div class="btn-group">
             <button type="submit" class="btn btn-primary">Déposer</button>
-            <a href="/parent/dashboard" class="btn">Annuler</a>
+            <a href="/parent/dashboard" class="btn btn-outline">Annuler</a>
         </div>
     </form>
 </div>
