@@ -74,4 +74,3 @@ class DatabaseTest extends TestCase
         Database::getInstance();
     }
 }
-

@@ -180,4 +180,3 @@ class AuthMiddlewareTest extends TestCase
         AuthMiddleware::requireTeenager();
     }
 }
-

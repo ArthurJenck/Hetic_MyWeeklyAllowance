@@ -21,4 +21,3 @@ class HomeControllerTest extends TestCase
         $this->assertNotEmpty($output);
     }
 }
-

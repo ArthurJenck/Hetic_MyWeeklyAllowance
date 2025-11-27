@@ -20,7 +20,7 @@ class Database
             $password = $_ENV['DB_PASSWORD'] ?? '';
 
             $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
-            
+
             $this->connection = new PDO($dsn, $username, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -45,13 +45,10 @@ class Database
         return $this->connection;
     }
 
-    private function __clone()
-    {
-    }
+    private function __clone() {}
 
     public function __wakeup()
     {
         throw new \Exception("Cannot unserialize singleton");
     }
 }
-

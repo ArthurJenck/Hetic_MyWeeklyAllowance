@@ -100,7 +100,7 @@ class AuthController
             }
         } elseif ($role === 'teenager') {
             $birthDate = $_POST['birth_date'] ?? '';
-            
+
             $existingUser = $this->userRepo->findTeenagerByEmail($email);
             if ($existingUser) {
                 header('Location: /auth/login-teenager?error=email_exists');

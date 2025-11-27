@@ -25,7 +25,7 @@ class RouterTest extends TestCase
         // Arrange
         $router = new Router();
         $called = false;
-        $action = function() use (&$called) {
+        $action = function () use (&$called) {
             $called = true;
             return 'response';
         };
@@ -53,4 +53,3 @@ class RouterTest extends TestCase
         $router->resolve('/unknown', 'GET');
     }
 }
-
