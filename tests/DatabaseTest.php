@@ -54,5 +54,24 @@ class DatabaseTest extends TestCase
         // Act
         $clone = clone $db;
     }
+
+    public function test_connection_failure_throws_exception(): void
+    {
+        // Arrange
+        $_ENV['DB_HOST'] = 'invalid_host_that_does_not_exist';
+        $_ENV['DB_NAME'] = 'invalid_db';
+
+        // Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Connection failed');
+
+        // Act
+        $reflection = new \ReflectionClass(Database::class);
+        $instance = $reflection->getProperty('instance');
+        $instance->setAccessible(true);
+        $instance->setValue(null, null);
+
+        Database::getInstance();
+    }
 }
 

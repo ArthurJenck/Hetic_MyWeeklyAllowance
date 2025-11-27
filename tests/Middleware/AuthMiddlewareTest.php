@@ -124,5 +124,60 @@ class AuthMiddlewareTest extends TestCase
         $this->assertEquals('teenager', $result->role);
         $this->assertEquals(2, $result->userId);
     }
+
+    public function test_require_auth_throws_exception_without_token(): void
+    {
+        // Arrange
+        $_COOKIE = [];
+
+        // Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Unauthorized');
+
+        // Act
+        AuthMiddleware::requireAuth();
+    }
+
+    public function test_require_auth_throws_exception_with_wrong_role(): void
+    {
+        // Arrange
+        $token = JWTHelper::generateToken(1, 'parent');
+        $_COOKIE['auth_token'] = $token;
+
+        // Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Access denied');
+
+        // Act
+        AuthMiddleware::requireAuth('teenager');
+    }
+
+    public function test_require_parent_throws_exception_for_teenager(): void
+    {
+        // Arrange
+        $token = JWTHelper::generateToken(2, 'teenager');
+        $_COOKIE['auth_token'] = $token;
+
+        // Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Access denied');
+
+        // Act
+        AuthMiddleware::requireParent();
+    }
+
+    public function test_require_teenager_throws_exception_for_parent(): void
+    {
+        // Arrange
+        $token = JWTHelper::generateToken(1, 'parent');
+        $_COOKIE['auth_token'] = $token;
+
+        // Assert
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Access denied');
+
+        // Act
+        AuthMiddleware::requireTeenager();
+    }
 }
 

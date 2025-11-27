@@ -93,7 +93,32 @@ class AuthController
 
                 header('Location: /parent/dashboard?registered=1');
             } catch (\Exception $e) {
-                error_log($e->getMessage());
+                if (!defined('PHPUNIT_RUNNING')) {
+                    error_log($e->getMessage());
+                }
+                header('Location: /auth/register?error=db');
+            }
+        } elseif ($role === 'teenager') {
+            $birthDate = $_POST['birth_date'] ?? '';
+            
+            $existingUser = $this->userRepo->findTeenagerByEmail($email);
+            if ($existingUser) {
+                header('Location: /auth/login-teenager?error=email_exists');
+                return;
+            }
+
+            try {
+                $userId = $this->userRepo->createTeenager($name, $birthDate, $email, $password, 0);
+                $this->walletRepo->create($userId);
+
+                $token = JWTHelper::generateToken($userId, 'teenager');
+                setcookie('auth_token', $token, time() + 86400, '/', '', false, true);
+
+                header('Location: /teenager/dashboard?registered=1');
+            } catch (\Exception $e) {
+                if (!defined('PHPUNIT_RUNNING')) {
+                    error_log($e->getMessage());
+                }
                 header('Location: /auth/register?error=db');
             }
         }

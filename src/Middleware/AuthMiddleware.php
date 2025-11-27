@@ -26,12 +26,12 @@ class AuthMiddleware
 
         if ($user === null) {
             header('Location: /auth/login');
-            exit;
+            throw new \Exception('Unauthorized');
         }
 
         if ($requiredRole !== null && $user->role !== $requiredRole) {
             http_response_code(403);
-            die('Access denied');
+            throw new \Exception('Access denied');
         }
 
         return $user;

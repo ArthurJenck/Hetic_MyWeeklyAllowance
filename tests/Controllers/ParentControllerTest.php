@@ -309,4 +309,13 @@ class ParentControllerTest extends TestCase
         global $mockHeaders;
         $this->assertContains('Location: /parent/dashboard?success=teenager_added', $mockHeaders);
     }
+
+    public function test_parent_controller_with_default_dependencies(): void
+    {
+        // Act
+        $controller = new ParentController();
+
+        // Assert
+        $this->assertInstanceOf(ParentController::class, $controller);
+    }
 }

@@ -90,7 +90,9 @@ class ParentController
 
             header('Location: /parent/dashboard?success=teenager_added');
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            if (!defined('PHPUNIT_RUNNING')) {
+                error_log($e->getMessage());
+            }
             header('Location: /parent/add-teenager?error=db');
         }
 

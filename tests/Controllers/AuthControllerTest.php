@@ -166,4 +166,74 @@ class AuthControllerTest extends TestCase
         global $mockHeaders;
         $this->assertContains('Location: /auth/register?error=db', $mockHeaders);
     }
+
+    public function test_register_teenager_success(): void
+    {
+        // Arrange
+        $_POST['name'] = 'Teen';
+        $_POST['email'] = 'teen@test.com';
+        $_POST['password'] = 'pass';
+        $_POST['birth_date'] = '2010-01-01';
+        $_POST['role'] = 'teenager';
+
+        $this->userRepo->method('findTeenagerByEmail')->willReturn(null);
+        $this->userRepo->method('createTeenager')->willReturn(2);
+        $this->walletRepo->expects($this->once())->method('create')->with(2);
+
+        // Act
+        $this->authController->register();
+
+        // Assert
+        global $mockHeaders;
+        $this->assertContains('Location: /teenager/dashboard?registered=1', $mockHeaders);
+    }
+
+    public function test_register_teenager_with_existing_email(): void
+    {
+        // Arrange
+        $_POST['name'] = 'Teen';
+        $_POST['email'] = 'existing@test.com';
+        $_POST['password'] = 'pass';
+        $_POST['birth_date'] = '2010-01-01';
+        $_POST['role'] = 'teenager';
+
+        $this->userRepo->method('findTeenagerByEmail')->willReturn(['id' => 2]);
+        $this->userRepo->expects($this->never())->method('createTeenager');
+
+        // Act
+        $this->authController->register();
+
+        // Assert
+        global $mockHeaders;
+        $this->assertContains('Location: /auth/login-teenager?error=email_exists', $mockHeaders);
+    }
+
+    public function test_register_teenager_handles_database_error(): void
+    {
+        // Arrange
+        $_POST['name'] = 'Teen';
+        $_POST['email'] = 'new@test.com';
+        $_POST['password'] = 'pass';
+        $_POST['birth_date'] = '2010-01-01';
+        $_POST['role'] = 'teenager';
+
+        $this->userRepo->method('findTeenagerByEmail')->willReturn(null);
+        $this->userRepo->method('createTeenager')->willThrowException(new \Exception('DB Error'));
+
+        // Act
+        $this->authController->register();
+
+        // Assert
+        global $mockHeaders;
+        $this->assertContains('Location: /auth/register?error=db', $mockHeaders);
+    }
+
+    public function test_auth_controller_with_default_dependencies(): void
+    {
+        // Act
+        $controller = new AuthController();
+
+        // Assert
+        $this->assertInstanceOf(AuthController::class, $controller);
+    }
 }
