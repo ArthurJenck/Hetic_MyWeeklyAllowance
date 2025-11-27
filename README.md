@@ -70,6 +70,32 @@ ou
 vendor/bin/phpunit
 ```
 
+### Couverture de code
+
+Pour générer le rapport de couverture :
+
+```bash
+composer test --coverage-text
+```
+
+Résultat actuel :
+
+```text
+PHPUnit 10.5.58 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.15 with Xdebug 3.4.7
+
+OK (167 tests, 322 assertions)
+
+Code Coverage Report:
+  2025-11-27 11:50:43
+
+ Summary:
+  Classes: 47.37% (9/19)
+  Methods: 81.82% (99/121)
+  Lines:   90.10% (464/515)
+```
+
 ### Lancer le projet en local
 
 Puisque l'architecture a été adaptée pour supporter les hébergements mutualisés (index.php à la racine) :
