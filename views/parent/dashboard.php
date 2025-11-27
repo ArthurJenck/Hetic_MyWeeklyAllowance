@@ -44,8 +44,8 @@ ob_start();
 </div>
 
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 0;">Mes Adolescents</h3>
+    <div class="flex-header">
+        <h3>Mes Adolescents</h3>
         <a href="/parent/add-teenager" class="btn btn-primary btn-sm">Ajouter un Adolescent</a>
     </div>
 

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Weekly Allowance - Gérez l'argent de poche de vos adolescents</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -13,6 +14,12 @@
         <div class="container">
             <div class="header-content">
                 <h1><a href="/">My Weekly Allowance</a></h1>
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+                <label for="menu-toggle" class="burger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
                 <nav>
                     <a href="/auth/login-parent">Connexion Parent</a>
                     <a href="/auth/login-teenager">Connexion Ado</a>

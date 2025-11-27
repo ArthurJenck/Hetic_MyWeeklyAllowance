@@ -15,7 +15,7 @@ ob_start();
         <div class="alert alert-error"><?= \App\Helpers\ErrorMessages::get($_GET['error']) ?></div>
     <?php endif; ?>
 
-    <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-top: 1.5rem;">
+    <div class="stats-grid stats-grid-2" style="margin-top: 1.5rem;">
         <div class="stat-card">
             <div class="stat-label">Allocation Hebdo</div>
             <div class="stat-value"><?= number_format($wallet['weekly_allowance'], 2) ?> €</div>
@@ -43,8 +43,8 @@ ob_start();
 </div>
 
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 0;">Mes Dernières Transactions</h3>
+    <div class="flex-header">
+        <h3>Mes Dernières Transactions</h3>
         <?php if (!empty($transactions)): ?>
             <a href="/teenager/history" class="btn btn-sm btn-outline">Voir tout</a>
         <?php endif; ?>

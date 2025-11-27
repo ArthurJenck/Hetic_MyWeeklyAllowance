@@ -5,8 +5,8 @@ ob_start();
 ?>
 
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h2 style="margin-bottom: 0;">Historique Complet</h2>
+    <div class="flex-header">
+        <h2>Historique Complet</h2>
         <a href="/teenager/dashboard" class="btn btn-sm btn-outline">← Retour</a>
     </div>
 
