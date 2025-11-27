@@ -174,4 +174,56 @@ class TeenagerTest extends TestCase
             $this->assertEquals('EXPENSE', $transaction->getType());
         }
     }
+
+    public function test_teenager_get_birth_date(): void
+    {
+        // Arrange
+        $birthDate = "2010-11-22";
+        $teenager = new Teenager("Jack", $birthDate, "jack@test.com");
+
+        // Act
+        $result = $teenager->getBirthDate();
+
+        // Assert
+        $this->assertInstanceOf(DateTime::class, $result);
+        $this->assertEquals($birthDate, $result->format('Y-m-d'));
+    }
+
+    public function test_teenager_get_phone_returns_null_by_default(): void
+    {
+        // Arrange
+        $teenager = new Teenager("Kate", "2012-01-15", "kate@test.com");
+
+        // Act
+        $result = $teenager->getPhone();
+
+        // Assert
+        $this->assertNull($result);
+    }
+
+    public function test_teenager_cannot_be_created_under_10_years_old(): void
+    {
+        // Arrange
+        $today = new DateTime();
+        $birthDate = $today->modify("-9 years")->format('Y-m-d');
+
+        // Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Teenager must be at least 10 years old');
+
+        // Act
+        new Teenager("Child", $birthDate, "child@test.com");
+    }
+
+    public function test_authenticate_returns_false_without_password_set(): void
+    {
+        // Arrange
+        $teenager = new Teenager("Liam", "2011-03-10", "liam@test.com");
+
+        // Act
+        $result = $teenager->authenticate("liam@test.com", "anyPassword");
+
+        // Assert
+        $this->assertFalse($result);
+    }
 }

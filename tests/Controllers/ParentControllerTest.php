@@ -260,4 +260,53 @@ class ParentControllerTest extends TestCase
         // Assert
         $this->assertTrue(true);
     }
+
+    public function test_add_teenager_handles_database_error(): void
+    {
+        // Arrange
+        $_POST['name'] = 'Teen';
+        $_POST['email'] = 'teen@test.com';
+        $_POST['password'] = 'pass';
+        $_POST['birth_date'] = '2010-01-01';
+        $_POST['initial_amount'] = 0;
+
+        $this->userRepo->method('createTeenager')->willThrowException(new \Exception('DB Error'));
+
+        // Act
+        $this->parentController->addTeenager();
+
+        // Assert
+        global $mockHeaders;
+        $this->assertContains('Location: /parent/add-teenager?error=db', $mockHeaders);
+    }
+
+    public function test_add_teenager_with_initial_amount_no_weekly_allowance(): void
+    {
+        // Arrange
+        $_POST['name'] = 'Teen';
+        $_POST['email'] = 'teen@test.com';
+        $_POST['password'] = 'pass';
+        $_POST['birth_date'] = '2010-01-01';
+        $_POST['weekly_allowance'] = 0;
+        $_POST['initial_amount'] = 50;
+
+        $this->userRepo->method('createTeenager')->willReturn(2);
+
+        $this->walletRepo->method('findByUserId')->willReturnCallback(function ($id) {
+            if ($id === 1) return ['id' => 1, 'balance' => 100];
+            if ($id === 2) return ['id' => 2, 'balance' => 0];
+            return null;
+        });
+
+        $this->userRepo->method('findById')->with(1)->willReturn(['id' => 1, 'name' => 'Parent']);
+
+        $this->transactionRepo->expects($this->exactly(2))->method('create');
+
+        // Act
+        $this->parentController->addTeenager();
+
+        // Assert
+        global $mockHeaders;
+        $this->assertContains('Location: /parent/dashboard?success=teenager_added', $mockHeaders);
+    }
 }

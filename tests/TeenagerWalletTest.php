@@ -239,4 +239,42 @@ class TeenagerWalletTest extends TestCase
         $this->assertEquals('EXPENSE', $history[2]->getType());
         $this->assertEquals('Cinéma', $history[2]->getDescription());
     }
+
+    public function test_teenager_wallet_deposit_without_allowance(): void
+    {
+        // Arrange
+        $wallet = new TeenagerWallet(0);
+
+        // Act
+        $wallet->deposit(50);
+
+        // Assert
+        $this->assertEquals(50, $wallet->getBalance());
+        $this->assertEquals(50, $wallet->getWeeklyRemainingBalance());
+    }
+
+    public function test_teenager_wallet_set_weekly_allowance(): void
+    {
+        // Arrange
+        $wallet = new TeenagerWallet(50);
+
+        // Act
+        $wallet->setWeeklyAllowance(100);
+
+        // Assert
+        $this->assertEquals(100, $wallet->getWeeklyAllowance());
+    }
+
+    public function test_teenager_wallet_withdraw_without_weekly_allowance(): void
+    {
+        // Arrange
+        $wallet = new TeenagerWallet(0);
+        $wallet->deposit(100);
+
+        // Act
+        $wallet->withdraw(30);
+
+        // Assert
+        $this->assertEquals(70, $wallet->getBalance());
+    }
 }

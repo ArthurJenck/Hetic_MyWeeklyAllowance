@@ -147,4 +147,23 @@ class AuthControllerTest extends TestCase
         global $mockHeaders;
         $this->assertContains('Location: /auth/login-parent', $mockHeaders);
     }
+
+    public function test_register_parent_handles_database_error(): void
+    {
+        // Arrange
+        $_POST['name'] = 'Parent';
+        $_POST['email'] = 'new@test.com';
+        $_POST['password'] = 'pass';
+        $_POST['role'] = 'parent';
+
+        $this->userRepo->method('findParentByEmail')->willReturn(null);
+        $this->userRepo->method('createParent')->willThrowException(new \Exception('DB Error'));
+
+        // Act
+        $this->authController->register();
+
+        // Assert
+        global $mockHeaders;
+        $this->assertContains('Location: /auth/register?error=db', $mockHeaders);
+    }
 }

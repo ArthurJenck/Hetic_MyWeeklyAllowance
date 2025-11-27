@@ -86,16 +86,30 @@ class TransactionFactoryTest extends TestCase
         }
     }
 
-    public function test_factory_validates_transaction_type(): void
+    #[TestWith(['DEPOSIT', true])]
+    #[TestWith(['WITHDRAWAL', true])]
+    #[TestWith(['EXPENSE', true])]
+    #[TestWith(['TRANSFER_IN', true])]
+    #[TestWith(['TRANSFER_OUT', true])]
+    #[TestWith(['INVALID_TYPE', false])]
+    #[TestWith(['', false])]
+    public function test_factory_validates_transaction_type(string $type, bool $isValid): void
     {
         // Arrange
         $factory = new TransactionFactory();
 
-        // Assert & Act
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Invalid transaction type');
+        if (!$isValid) {
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage('Invalid transaction type');
+        }
 
-        $factory->validateTransactionType('INVALID_TYPE');
+        // Act
+        $factory->validateTransactionType($type);
+
+        // Assert
+        if ($isValid) {
+            $this->assertTrue(true);
+        }
     }
 
     public function test_factory_allows_parent_transfer_if_sufficient_balance(): void
@@ -210,5 +224,81 @@ class TransactionFactoryTest extends TestCase
         $this->assertEquals('TRANSFER_OUT', $history[1]->getType());
         $this->assertEquals(30, $teenagerWallet->getBalance());
         $this->assertEquals(30, $teenagerWallet->getWeeklyRemainingBalance());
+    }
+
+    public function test_factory_create_withdrawal_with_negative_amount(): void
+    {
+        // Arrange
+        $factory = new TransactionFactory();
+        $wallet = new TeenagerWallet(50);
+        $wallet->deposit(100);
+
+        // Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Amount must be positive');
+
+        // Act
+        $factory->createWithdrawal($wallet, -10, 'Negative');
+    }
+
+    public function test_factory_create_expense_exceeds_weekly_limit(): void
+    {
+        // Arrange
+        $factory = new TransactionFactory();
+        $wallet = new TeenagerWallet(50);
+        $wallet->deposit(100);
+
+        // Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Weekly allowance exceeded');
+
+        // Act
+        $factory->createExpense($wallet, 60, 'Too much');
+    }
+
+    public function test_factory_create_expense_with_negative_amount(): void
+    {
+        // Arrange
+        $factory = new TransactionFactory();
+        $wallet = new TeenagerWallet(50);
+        $wallet->deposit(100);
+
+        // Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Amount must be positive');
+
+        // Act
+        $factory->createExpense($wallet, -5, 'Negative');
+    }
+
+    public function test_factory_create_transfer_with_negative_amount(): void
+    {
+        // Arrange
+        $factory = new TransactionFactory();
+        $parentWallet = new ParentWallet();
+        $teenagerWallet = new TeenagerWallet(50);
+        $parentWallet->deposit(100);
+
+        // Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Amount must be positive');
+
+        // Act
+        $factory->createTransfer($parentWallet, $teenagerWallet, -10, 'Negative');
+    }
+
+    public function test_factory_create_deposit_with_teenager_wallet(): void
+    {
+        // Arrange
+        $factory = new TransactionFactory();
+        $wallet = new TeenagerWallet(50);
+
+        // Act
+        $transaction = $factory->createDeposit($wallet, 75, 'Allowance');
+
+        // Assert
+        $this->assertInstanceOf(Transaction::class, $transaction);
+        $this->assertEquals(75, $transaction->getAmount());
+        $this->assertEquals(75, $wallet->getBalance());
     }
 }

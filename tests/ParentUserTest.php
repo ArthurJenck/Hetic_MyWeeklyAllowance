@@ -212,4 +212,29 @@ class ParentUserTest extends TestCase
         });
         $this->assertCount(2, $expenseTransactions);
     }
+
+    public function test_parent_can_set_password(): void
+    {
+        // Arrange
+        $parent = new ParentUser("Parent");
+
+        // Act
+        $parent->setPassword("securePassword123");
+
+        // Assert
+        $this->assertTrue(true);
+    }
+
+    public function test_parent_cannot_update_name_with_empty_string(): void
+    {
+        // Arrange
+        $parent = new ParentUser("Parent");
+
+        // Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Name cannot be empty');
+
+        // Act
+        $parent->updateName("");
+    }
 }
