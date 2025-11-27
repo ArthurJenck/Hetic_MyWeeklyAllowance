@@ -102,4 +102,13 @@ class TeenagerControllerTest extends TestCase
         global $mockHeaders;
         $this->assertContains('Location: ' . $expectedRedirect, $mockHeaders);
     }
+
+    public function test_teenager_controller_with_default_dependencies(): void
+    {
+        // Act
+        $controller = new TeenagerController();
+
+        // Assert
+        $this->assertInstanceOf(TeenagerController::class, $controller);
+    }
 }
